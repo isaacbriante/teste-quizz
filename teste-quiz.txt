@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Intermac</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Montserrat,sans-serif;
+}
+
+body{
+
+background:#0B2B59;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+padding:20px;
+
+}
+
+.container{
+
+background:white;
+width:100%;
+max-width:650px;
+padding:40px;
+border-radius:20px;
+box-shadow:0 15px 40px rgba(0,0,0,.25);
+
+}
+
+h1{
+
+color:#0B2B59;
+margin-bottom:20px;
+
+}
+
+.progress{
+
+height:10px;
+background:#eee;
+border-radius:20px;
+margin-bottom:30px;
+overflow:hidden;
+
+}
+
+.bar{
+
+height:100%;
+background:#ff6d00;
+width:0%;
+transition:.3s;
+
+}
+
+.question{
+
+font-size:22px;
+font-weight:600;
+margin-bottom:20px;
+
+}
+
+.answers button{
+
+width:100%;
+padding:16px;
+margin-bottom:12px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+background:#f2f2f2;
+font-size:17px;
+transition:.2s;
+
+}
+
+.answers button:hover{
+
+background:#0B2B59;
+color:white;
+
+}
+
+input{
+
+width:100%;
+padding:15px;
+margin-bottom:15px;
+font-size:16px;
+border-radius:10px;
+border:1px solid #ccc;
+
+}
+
+.final{
+
+display:none;
+
+}
+
+.btn{
+
+background:#ff6d00;
+color:white;
+padding:15px;
+width:100%;
+border:none;
+border-radius:10px;
+font-size:18px;
+cursor:pointer;
+
+}
+
+.score{
+
+font-size:30px;
+margin:20px 0;
+color:#0B2B59;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="quiz">
+
+<h1>Quiz Intermac ✈️</h1>
+
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
+
+<div class="question" id="question"></div>
+
+<div class="answers" id="answers"></div>
+
+</div>
+
+<div class="final" id="final">
+
+<h1>Parabéns!</h1>
+
+<p class="score" id="score"></p>
+
+<p>Preencha seus dados para participar.</p>
+
+<br>
+
+<input type="text" id="nome" placeholder="Nome">
+
+<input type="email" id="email" placeholder="E-mail">
+
+<input type="tel" id="telefone" placeholder="Telefone">
+
+<button class="btn" onclick="enviar()">Enviar</button>
+
+</div>
+
+</div>
+
+<script>
+
+const perguntas=[
+
+{
+
+pergunta:"1. A Intermac oferece atendimento:",
+
+opcoes:[
+"Somente no Brasil",
+"24 horas em vários idiomas",
+"Apenas em horário comercial",
+"Somente por WhatsApp"
+],
+
+correta:1
+
+},
+
+{
+
+pergunta:"2. O seguro viagem serve para:",
+
+opcoes:[
+"Comprar passagens",
+"Cobrir despesas médicas durante a viagem",
+"Reservar hotéis",
+"Trocar moeda"
+],
+
+correta:1
+
+},
+
+{
+
+pergunta:"3. Em uma emergência durante a viagem você deve:",
+
+opcoes:[
+"Pagar tudo sozinho",
+"Acionar a assistência da Intermac",
+"Cancelar a viagem",
+"Ligar para a companhia aérea"
+],
+
+correta:1
+
+},
+
+{
+
+pergunta:"4. Qual benefício é comum em um seguro viagem?",
+
+opcoes:[
+"Assistência médica",
+"Extravio de bagagem",
+"Atendimento 24h",
+"Todos acima"
+],
+
+correta:3
+
+},
+
+{
+
+pergunta:"5. Viajar com seguro é:",
+
+opcoes:[
+"Desnecessário",
+"Importante para viajar protegido",
+"Só para Europa",
+"Apenas para idosos"
+],
+
+correta:1
+
+}
+
+];
+
+let atual=0;
+let pontos=0;
+
+function carregar(){
+
+document.getElementById("bar").style.width=((atual)/perguntas.length*100)+"%";
+
+let p=perguntas[atual];
+
+document.getElementById("question").innerHTML=p.pergunta;
+
+let html="";
+
+p.opcoes.forEach((op,i)=>{
+
+html+=`<button onclick="responder(${i})">${op}</button>`;
+
+});
+
+document.getElementById("answers").innerHTML=html;
+
+}
+
+carregar();
+
+function responder(i){
+
+if(i==perguntas[atual].correta){
+
+pontos++;
+
+}
+
+atual++;
+
+if(atual<perguntas.length){
+
+carregar();
+
+}else{
+
+document.getElementById("quiz").style.display="none";
+
+document.getElementById("final").style.display="block";
+
+document.getElementById("score").innerHTML=
+"Você acertou "+pontos+" de "+perguntas.length+" perguntas.";
+
+}
+
+}
+
+function enviar(){
+
+const dados={
+
+nome:document.getElementById("nome").value,
+email:document.getElementById("email").value,
+telefone:document.getElementById("telefone").value,
+pontos:pontos
+
+};
+
+// ALTERE PARA SUA URL DO GOOGLE APPS SCRIPT
+
+fetch("COLE_AQUI_SUA_URL",{
+
+method:"POST",
+mode:"no-cors",
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify(dados)
+
+});
+
+alert("Obrigado por participar!");
+
+location.reload();
+
+}
+
+</script>
+
+</body>
+</html>
